@@ -20,8 +20,8 @@ export default function PrivacyGdprTab({ userToken, onRefresh }: PrivacyGdprTabP
 
   // Admin and deployment options states
   const [adminPassword, setAdminPassword] = useState('');
-  const [expectedPassword, setExpectedPassword] = useState('admin123');
-  const [currentVerifiedPassword, setCurrentVerifiedPassword] = useState('admin123');
+  const [expectedPassword, setExpectedPassword] = useState('');
+  const [currentVerifiedPassword, setCurrentVerifiedPassword] = useState('');
   const [tempNewPassword, setTempNewPassword] = useState('');
   const [isChangingPass, setIsChangingPass] = useState(false);
   const [adminUnlocked, setAdminUnlocked] = useState(false);
@@ -73,7 +73,7 @@ export default function PrivacyGdprTab({ userToken, onRefresh }: PrivacyGdprTabP
         setAdminPassword('');
       } else {
         const errData = await res.json();
-        alert(errData.error || "Contraseña de administrador incorrecta. La clave inicial por defecto es 'admin123'.");
+        alert(errData.error || "Contraseña de administrador incorrecta. Contraseña de administrador incorrecta.");
       }
     } catch (err) {
       alert("Error de comunicación para validar el acceso admin.");
@@ -538,7 +538,7 @@ export default function PrivacyGdprTab({ userToken, onRefresh }: PrivacyGdprTabP
                     <div className="relative">
                       <input
                         type="password"
-                        placeholder="Introduce tu clave técnica (Por defecto: admin123)"
+                        placeholder="Introduce tu clave de administrador"
                         value={adminPassword}
                         onChange={(e) => setAdminPassword(e.target.value)}
                         className="w-full text-xs border border-slate-200 rounded-xl pl-3.5 pr-20 py-2.5 bg-slate-50 focus:bg-white focus:ring-1 focus:ring-indigo-500 focus:outline-none transition font-mono uppercase tracking-widest text-center"
@@ -552,7 +552,7 @@ export default function PrivacyGdprTab({ userToken, onRefresh }: PrivacyGdprTabP
                     </div>
                   </div>
                   <p className="text-[10px] text-slate-400 font-sans leading-normal">
-                    💡 La clave inicial configurada en el sistema es <code className="bg-slate-100 text-slate-800 px-1 py-0.5 rounded font-mono font-bold">admin123</code>.
+                    
                   </p>
                 </form>
               ) : (
