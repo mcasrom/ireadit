@@ -23,6 +23,6 @@ ssh $SERVER "
   NODE_ENV=production pm2 start dist/server.cjs --name ireadit
   pm2 save
   sleep 2
-  curl -s http://localhost:3110/api/books | python3 -c 'import json,sys; d=json.load(sys.stdin); print(f\"✓ {len(d)} libros OK\")'
+  curl -s http://localhost:3110/api/gutenberg/classics | python3 -c 'import json,sys; d=json.load(sys.stdin); print(f\"✓ {len(d)} libros OK\")'
 "
 echo ">>> DEPLOY COMPLETADO OK"
