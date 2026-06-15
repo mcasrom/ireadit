@@ -701,7 +701,7 @@ app.post("/api/gdpr/request", (req, res) => {
 });
 
 // Secure Admin Configuration state
-let backendAdminPassword = "admin123";
+let backendAdminPassword = process.env.ADMIN_PASSWORD || "admin123";
 
 // 7. Admin Endpoint: Fetch all reviews (including on-hold / flagged ones)
 app.post("/api/admin/books", (req, res) => {
