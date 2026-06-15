@@ -1,0 +1,6 @@
+{
+  "name": "Ireadit",
+  "description": "Una plataforma dashboard interactiva tipo mural de la fama para registrar lecturas de libros, con prevención de fraudes/spam por IA y soporte del derecho al olvido según el RGPD europeo.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
