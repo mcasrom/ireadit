@@ -307,17 +307,17 @@ app.get("/api/widget/viaje", (req, res) => {
 const GUTENBERG_TRAVEL_CLASSICS = [
   {
     gutenbergId: 14457,
-    title: "La Vuelta al Mundo en Ochenta Días",
-    author: "Julio Verne",
-    rating: 5,
-    comment: "La fantástica e ingeniosa aventura de Phileas Fogg y Passepartout. Una carrera contra el reloj plagada de descripciones de la India, Hong Kong, Japón y Norteamérica del siglo XIX. La cuadratura perfecta del viaje con la exactitud técnica inglesa.",
-    recommendation: "Lectores soñadores, amantes de la geografía histórica, aventureros de salón.",
-    emoji: "🌍",
-    coverColor: "sky",
-    aiSummary: "El canon supremo de la aventura contra reloj y la cartografía cultural del siglo XIX.",
-    language: "es",
+    title: "Kings, Queens and Pawns: An American Woman at the Front",
+    author: "Mary Roberts Rinehart",
+    rating: 4,
+    comment: "Crónica real de una periodista americana en el frente de la Primera Guerra Mundial (1914). Rinehart viajó a Bélgica y Francia bajo fuego, documentando con agudeza el horror bélico, los hospitales de campaña y la resistencia civil. Una de las primeras corresponsales de guerra de la historia.",
+    recommendation: "Amantes de la historia bélica, periodistas de viaje, estudiantes de geopolítica y riesgo global.",
+    emoji: "⚔️",
+    coverColor: "rose",
+    aiSummary: "El viaje más peligroso: una mujer sola en el frente europeo de la Gran Guerra.",
+    language: "en",
     gutenbergLink: "https://www.gutenberg.org/ebooks/14457",
-    gutenbergTextLink: "https://www.gutenberg.org/files/14457/14457-h/14457-h.htm"
+    gutenbergTextLink: "https://www.gutenberg.org/cache/epub/14457/pg14457-images.html"
   },
   {
     gutenbergId: 103,
@@ -331,7 +331,7 @@ const GUTENBERG_TRAVEL_CLASSICS = [
     aiSummary: "A timeless masterpiece celebrating geography, clocks, global railways, and ultimate pacing.",
     language: "en",
     gutenbergLink: "https://www.gutenberg.org/ebooks/103",
-    gutenbergTextLink: "https://www.gutenberg.org/files/103/103-h/103-h.htm"
+    gutenbergTextLink: "https://www.gutenberg.org/cache/epub/103/pg103-images.html"
   },
   {
     gutenbergId: 3173,
@@ -345,7 +345,7 @@ const GUTENBERG_TRAVEL_CLASSICS = [
     aiSummary: "Una sutil burla del turismo pretencioso y las falsas deidades de los guías turísticos tradicionales.",
     language: "en",
     gutenbergLink: "https://www.gutenberg.org/ebooks/3173",
-    gutenbergTextLink: "https://www.gutenberg.org/files/3173/3173-h/3173-h.htm"
+    gutenbergTextLink: "https://www.gutenberg.org/cache/epub/3173/pg3173-images.html"
   },
   {
     gutenbergId: 3704,
@@ -359,7 +359,7 @@ const GUTENBERG_TRAVEL_CLASSICS = [
     aiSummary: "El diario que redefinió nuestra herencia científica recorriendo las costas inexploradas del planeta.",
     language: "en",
     gutenbergLink: "https://www.gutenberg.org/ebooks/3704",
-    gutenbergTextLink: "https://www.gutenberg.org/files/3704/3704-h/3704-h.htm"
+    gutenbergTextLink: "https://www.gutenberg.org/cache/epub/3704/pg3704-images.html"
   },
   {
     gutenbergId: 4390,
@@ -373,7 +373,7 @@ const GUTENBERG_TRAVEL_CLASSICS = [
     aiSummary: "La España romántica y peligrosa de bandolerismo relatada con agudeza antropológica extrema.",
     language: "es",
     gutenbergLink: "https://www.gutenberg.org/ebooks/4390",
-    gutenbergTextLink: "https://www.gutenberg.org/files/4390/4390-h/4390-h.htm"
+    gutenbergTextLink: "https://www.gutenberg.org/cache/epub/4390/pg4390-images.html"
   },
   {
     gutenbergId: 17319,
@@ -387,7 +387,49 @@ const GUTENBERG_TRAVEL_CLASSICS = [
     aiSummary: "Soberbia parodia fantástica que ridiculiza la fatuidad mercantil y la superioridad científica.",
     language: "es",
     gutenbergLink: "https://www.gutenberg.org/ebooks/17319",
-    gutenbergTextLink: "https://www.gutenberg.org/files/17319/17319-h/17319-h.htm"
+    gutenbergTextLink: "https://www.gutenberg.org/cache/epub/17319/pg17319-images.html"
+  },
+  {
+    gutenbergId: 829,
+    title: "Gulliver's Travels",
+    author: "Jonathan Swift",
+    rating: 5,
+    comment: "The ultimate satire of exploration and political risk. Gulliver's voyages to Lilliput, Brobdingnag, Laputa and the Houyhnhnms expose the absurdity of war, colonialism, and blind trust in governments — a masterclass in geopolitical scepticism disguised as adventure.",
+    recommendation: "Geopolitical analysts, risk consultants, sceptical travellers and fans of sharp satire.",
+    emoji: "🗺️",
+    coverColor: "emerald",
+    aiSummary: "Every border crossed reveals a new absurdity of power — the oldest risk manual ever written.",
+    language: "en",
+    gutenbergLink: "https://www.gutenberg.org/ebooks/829",
+    gutenbergTextLink: "https://www.gutenberg.org/cache/epub/829/pg829-images.html"
+  },
+  {
+    gutenbergId: 1328,
+    title: "The War of the Worlds",
+    author: "H.G. Wells",
+    rating: 5,
+    comment: "La novela que inventó el concepto de riesgo existencial global. Una invasión alienígena arrasa el sur de Inglaterra: caos, evacuaciones masivas, colapso de infraestructuras y supervivencia extrema. Wells anticipó el manual de gestión de crisis del siglo XX con 120 años de antelación.",
+    recommendation: "Analistas de riesgo, lectores de ciencia ficción clásica, planificadores de emergencias.",
+    emoji: "🛸",
+    coverColor: "red",
+    aiSummary: "El primer modelo mental de colapso civilizatorio total — y cómo sobrevivir a él.",
+    language: "en",
+    gutenbergLink: "https://www.gutenberg.org/ebooks/36",
+    gutenbergTextLink: "https://www.gutenberg.org/cache/epub/36/pg36-images.html"
+  },
+  {
+    gutenbergId: 5230,
+    title: "The Time Machine",
+    author: "H.G. Wells",
+    rating: 4,
+    comment: "Un viajero del tiempo descubre que la humanidad se ha dividido en dos razas: los Eloi (clase ociosa) y los Morlocks (clase trabajadora subterránea). Una distopía que sigue siendo el análisis más brutal de la desigualdad social y los riesgos a largo plazo de no corregirla.",
+    recommendation: "Futuristas, analistas de riesgo sistémico, lectores de ciencia ficción filosófica.",
+    emoji: "⏱️",
+    coverColor: "amber",
+    aiSummary: "El viaje más arriesgado no es al espacio — es al futuro que estamos construyendo ahora.",
+    language: "en",
+    gutenbergLink: "https://www.gutenberg.org/ebooks/35",
+    gutenbergTextLink: "https://www.gutenberg.org/cache/epub/35/pg35-images.html"
   }
 ];
 

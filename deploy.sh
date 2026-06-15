@@ -9,12 +9,15 @@ npm run build
 echo ">>> Push a GitHub..."
 git push
 
+echo ">>> Copiar .env al servidor..."
+scp .env $SERVER:$APP_DIR/.env
+
 echo ">>> Deploy en servidor..."
 ssh $SERVER "
   cd $APP_DIR
   git pull
   npm run build
-  pm2 stop ireadit
+  pm2 stop ireadit 2>/dev/null || true
   fuser -k 3110/tcp 2>/dev/null || true
   sleep 2
   NODE_ENV=production pm2 start dist/server.cjs --name ireadit
