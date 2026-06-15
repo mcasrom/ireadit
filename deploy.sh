@@ -1,0 +1,25 @@
+#!/bin/bash
+set -e
+SERVER="deploy@178.105.80.193"
+APP_DIR="/home/deploy/apps/ireadit"
+
+echo ">>> Build local..."
+npm run build
+
+echo ">>> Push a GitHub..."
+git push
+
+echo ">>> Deploy en servidor..."
+ssh $SERVER "
+  cd $APP_DIR
+  git pull
+  npm run build
+  pm2 stop ireadit
+  fuser -k 3110/tcp 2>/dev/null || true
+  sleep 2
+  NODE_ENV=production pm2 start dist/server.cjs --name ireadit
+  pm2 save
+  sleep 2
+  curl -s http://localhost:3110/api/books | python3 -c 'import json,sys; d=json.load(sys.stdin); print(f\"✓ {len(d)} libros OK\")'
+"
+echo ">>> DEPLOY COMPLETADO OK"
