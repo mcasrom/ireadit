@@ -626,7 +626,7 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
                     <motion.div
                       layoutId={`radial-card-${book.id}`}
                       key={book.id}
-                      className={`rounded-2xl border-2 p-5 sm:p-7 shadow-2xl relative transition hover:shadow-indigo-500/10 ${getCoverColor(book.coverColor)}`}
+                      className={`rounded-2xl border-2 p-4 shadow-lg relative transition hover:shadow-indigo-500/10 ${getCoverColor(book.coverColor)}`}
                     >
                       {/* Top ribbon */}
                       <div className="flex items-center justify-between gap-2 mb-3.5 border-b border-dotted border-slate-300 pb-3">
@@ -641,27 +641,21 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
                         </div>
                       </div>
 
-                      <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 leading-snug">{book.title}</h3>
+                      <h3 className="text-base font-bold tracking-tight text-slate-900 leading-snug">{book.title}</h3>
                       <p className="text-xs text-slate-500 font-mono mt-0.5">Por {book.author}</p>
 
                       {/* User opinion comment */}
-                      <p className="text-sm text-slate-800 leading-relaxed font-sans mt-3.5 bg-white/70 p-3 rounded-lg border border-slate-205/60 italic">
+                      <p className="text-xs text-slate-700 leading-relaxed font-sans mt-2 bg-white/70 p-2 rounded-lg border border-slate-200/60 italic">
                         &ldquo;{book.comment}&rdquo;
                       </p>
 
                       {/* Recommend box */}
-                      <div className="mt-4 bg-slate-900 text-white p-3.5 rounded-xl border border-slate-800">
-                        <div className="flex items-center gap-1 text-[10px] font-mono text-amber-400 uppercase font-bold tracking-wider mb-1">
-                          <Compass className="w-3.5 h-3.5 text-amber-300" /> lo imprescindible aconsejable
-                        </div>
-                        <p className="text-xs text-slate-200 leading-relaxed">{book.recommendation}</p>
+                      <div className="mt-3 bg-slate-50 border border-slate-200 p-2 rounded-lg">
+                        <p className="text-xs text-slate-600 line-clamp-2">💡 {book.recommendation}</p>
                       </div>
 
                       {/* AI Micro Quote */}
-                      <div className="mt-3.5 flex items-center gap-1.5 text-2xs font-mono text-indigo-700 bg-indigo-50/50 p-2 rounded-lg border border-indigo-100">
-                        <span className="font-bold flex items-center gap-0.5">💡 Resumen IA:</span>
-                        <span className="italic">{book.aiSummary}</span>
-                      </div>
+                      <p className="mt-2 text-2xs font-mono text-indigo-600 italic line-clamp-1">✨ {book.aiSummary}</p>
 
                       {/* Reaction Bar & GDPR Self Purge control */}
                       <div className="mt-5 flex flex-wrap items-center justify-between gap-3 pt-3.5 border-t border-slate-205">
