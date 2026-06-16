@@ -367,7 +367,7 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
           </div>
 
           {/* Classics Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filteredGutenbergClassics.map((classic) => {
               const bookExistsInMural = books.some(b => b.gutenbergId === classic.gutenbergId);
               return (
@@ -509,12 +509,12 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
             <p className="text-slate-400 font-mono text-xs text-center">No se encontraron lecturas que coincidan con la búsqueda o filtro.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filteredBooks.map((book) => (
               <motion.div
                 layoutId={`radial-card-${book.id}`}
                 key={book.id}
-                className={`rounded-3xl border p-6 flex flex-col justify-between shadow-xs transition duration-200 hover:-translate-y-0.5 hover:shadow-md ${getCoverColor(book.coverColor)}`}
+                className={`rounded-2xl border p-4 flex flex-col justify-between shadow-xs transition duration-200 hover:-translate-y-0.5 hover:shadow-md ${getCoverColor(book.coverColor)}`}
               >
                 <div>
                   <div className="flex items-center justify-between border-b border-dotted border-slate-200 pb-3.5 mb-4">
@@ -524,24 +524,18 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
                     </span>
                   </div>
 
-                  <h3 className="text-lg font-bold text-slate-900 leading-tight tracking-tight">{book.title}</h3>
+                  <h3 className="text-sm font-bold text-slate-900 leading-tight tracking-tight">{book.title}</h3>
                   <p className="text-2xs text-slate-500 font-mono mt-0.5">Escrito por {book.author}</p>
 
                   <p className="text-xs text-slate-800 mt-4 leading-relaxed italic font-sans bg-white/50 p-3 rounded-xl border border-slate-200/50">
                     &ldquo;{book.comment}&rdquo;
                   </p>
 
-                  <div className="mt-4 bg-slate-900 text-white p-3.5 rounded-2xl border border-slate-800">
-                    <span className="text-[10px] font-mono text-amber-400 uppercase tracking-wider block font-bold mb-1">
-                       lo imprescindible aconsejable
-                    </span>
-                    <p className="text-xs text-slate-200 leading-relaxed font-sans">{book.recommendation}</p>
+                  <div className="mt-3 bg-slate-50 border border-slate-200 p-2.5 rounded-xl">
+                    <p className="text-xs text-slate-600 leading-relaxed font-sans line-clamp-2">💡 {book.recommendation}</p>
                   </div>
 
-                  <div className="mt-3 bg-indigo-50 border border-indigo-150 p-2.5 rounded-xl text-2xs text-indigo-800 font-mono leading-relaxed flex items-center gap-1">
-                    <span className="font-bold shrink-0">✨ Insight IA:</span>
-                    <p className="italic">{book.aiSummary}</p>
-                  </div>
+                  <div className="mt-2 text-2xs text-indigo-600 font-mono italic line-clamp-1">✨ {book.aiSummary}</div>
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between gap-3">
