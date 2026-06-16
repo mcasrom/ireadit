@@ -159,8 +159,7 @@ export default function App() {
                 Viaja más.
               </h1>
               <p className="mt-4 text-sm text-stone-600 leading-relaxed max-w-sm">
-                oreadit <span className="text-stone-400 font-mono text-xs">(oh read it)</span> es tu espacio
-                para llevar un registro de tus lecturas, compartir reseñas y descubrir nuevos mundos.
+                Ireadit es tu espacio para llevar un registro de tus lecturas, compartir reseñas y descubrir nuevos mundos.
               </p>
               <div className="mt-6 flex items-center gap-3 flex-wrap">
                 <button
