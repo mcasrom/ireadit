@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BookReview } from '../types';
 import { Heart, ThumbsDown, Recycle, Star, Calendar, Trash2, Shield, Search, ArrowUpRight, Award, Compass, HelpCircle, BookOpen, Download, ExternalLink, Globe, Plus } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -17,93 +17,13 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
   const [searchQuery, setSearchQuery] = useState('');
   const [gutenbergLang, setGutenbergLang] = useState<'all' | 'es' | 'en'>('all');
   const [importingId, setImportingId] = useState<number | null>(null);
-
-  const gutenbergClassicsList = [
-    {
-      gutenbergId: 14457,
-      title: "La Vuelta al Mundo en Ochenta Días",
-      author: "Julio Verne",
-      rating: 5,
-      comment: "La fantástica e ingeniosa aventura de Phileas Fogg y Passepartout. Una carrera contra el reloj plagada de descripciones de la India, Hong Kong, Japón y Norteamérica del siglo XIX. La cuadratura perfecta del viaje con la exactitud técnica inglesa.",
-      recommendation: "Lectores soñadores, amantes de la geografía histórica, aventureros de salón.",
-      emoji: "🌍",
-      coverColor: "sky",
-      aiSummary: "El canon supremo de la aventura contra reloj y la cartografía cultural del siglo XIX.",
-      language: "es",
-      gutenbergLink: "https://www.gutenberg.org/ebooks/14457",
-      gutenbergTextLink: "https://www.gutenberg.org/files/14457/14457-h/14457-h.htm"
-    },
-    {
-      gutenbergId: 103,
-      title: "Around the World in Eighty Days",
-      author: "Jules Verne",
-      rating: 5,
-      comment: "Phileas Fogg's legendary voyage around the globe on a bet. From steamships to railways and guidebooks, it represents the marvel of modern transportation, geography, and Victorian determination.",
-      recommendation: "Aventureros en tren, apasionados de la ciencia ficción de la época victoriana.",
-      emoji: "🚂",
-      coverColor: "emerald",
-      aiSummary: "A timeless masterpiece celebrating geography, clocks, global railways, and ultimate pacing.",
-      language: "en",
-      gutenbergLink: "https://www.gutenberg.org/ebooks/103",
-      gutenbergTextLink: "https://www.gutenberg.org/files/103/103-h/103-h.htm"
-    },
-    {
-      gutenbergId: 3173,
-      title: "Innocents Abroad",
-      author: "Mark Twain",
-      rating: 4,
-      comment: "A hilarious and cynical chronicle of Twain's excursion through Europe and the Holy Land in 1867. He mocks traditional tourists who pretend to feel sentimental awe, providing a raw and incredibly witty travel review.",
-      recommendation: "Amantes del humor inteligente, satíricos, historiadores de viajes coloniales.",
-      emoji: "🚢",
-      coverColor: "amber",
-      aiSummary: "Una sutil burla del turismo pretencioso y las falsas deidades de los guías turísticos tradicionales.",
-      language: "en",
-      gutenbergLink: "https://www.gutenberg.org/ebooks/3173",
-      gutenbergTextLink: "https://www.gutenberg.org/files/3173/3173-h/3173-h.htm"
-    },
-    {
-      gutenbergId: 3704,
-      title: "The Voyage of the Beagle",
-      author: "Charles Darwin",
-      rating: 5,
-      comment: "Darwin's fascinating travel journal as a young naturalist aboard the HMS Beagle. Vital accounts of South America, Patagonia, the Galápagos Islands, and Australia that laid the physical foundation of evolutionary biology.",
-      recommendation: "Geógrafos natos, biólogos, curiosos del mundo salvaje e isleño.",
-      emoji: "🌋",
-      coverColor: "indigo",
-      aiSummary: "El diario que redefinió nuestra herencia científica recorriendo las costas inexploradas del planeta.",
-      language: "en",
-      gutenbergLink: "https://www.gutenberg.org/ebooks/3704",
-      gutenbergTextLink: "https://www.gutenberg.org/files/3704/3704-h/3704-h.htm"
-    },
-    {
-      gutenbergId: 4390,
-      title: "La Biblia en España",
-      author: "George Borrow",
-      rating: 4,
-      comment: "Una de las crónicas de viaje más fascinantes de la España del siglo XIX. Borrow recorre caminos hostiles repartiendo testamentos en plena guerra carlista, retratando con genio literario a gitanos, bandoleros y posaderos.",
-      recommendation: "Amantes de la literatura costumbrista de caminos, hispanistas, viajeros de mochila pura.",
-      emoji: "🐴",
-      coverColor: "rose",
-      aiSummary: "La España romántica y peligrosa de bandolerismo relatada con agudeza antropológica extrema.",
-      language: "es",
-      gutenbergLink: "https://www.gutenberg.org/ebooks/4390",
-      gutenbergTextLink: "https://www.gutenberg.org/files/4390/4390-h/4390-h.htm"
-    },
-    {
-      gutenbergId: 17319,
-      title: "Viajes de Gulliver",
-      author: "Jonathan Swift",
-      rating: 5,
-      comment: "La sátira definitiva de la era de los descubrimientos. A través de Liliput, Brobdingnag y Laputa, Swift disecciona el ridículo comportamiento humano, la política y la arrogancia de los relatos de viajes científicos de su época.",
-      recommendation: "Cínicos amables, amantes de la fantasía clásica satírica.",
-      emoji: "⛵",
-      coverColor: "purple",
-      aiSummary: "Soberbia parodia fantástica que ridiculiza la fatuidad mercantil y la superioridad científica.",
-      language: "es",
-      gutenbergLink: "https://www.gutenberg.org/ebooks/17319",
-      gutenbergTextLink: "https://www.gutenberg.org/files/17319/17319-h/17319-h.htm"
-    }
-  ];
+  const [gutenbergClassicsList, setGutenbergClassicsList] = useState<any[]>([]);
+  useEffect(() => {
+    fetch('/api/gutenberg/classics')
+      .then(r => r.json())
+      .then(data => setGutenbergClassicsList(data))
+      .catch(() => {});
+  }, []);
 
   const filteredGutenbergClassics = gutenbergClassicsList.filter(c => {
     if (gutenbergLang === 'all') return true;
