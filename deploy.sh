@@ -12,11 +12,13 @@ git push
 echo ">>> Copiar .env al servidor..."
 scp .env $SERVER:$APP_DIR/.env
 
+echo ">>> Sincronizar dist al servidor..."
+rsync -av dist/ deploy@178.105.80.193:/home/deploy/apps/ireadit/dist/
+
 echo ">>> Deploy en servidor..."
 ssh $SERVER "
   cd $APP_DIR
   git pull
-  npm run build
   pm2 stop ireadit 2>/dev/null || true
   fuser -k 3110/tcp 2>/dev/null || true
   sleep 2
