@@ -717,7 +717,7 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
               </div>
 
               {/* LEVEL 2: Intermediate Orbital ring (Books 2 to 5) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {books.slice(1, 4).length === 0 ? (
                   <div className="col-span-full text-center py-4 text-xs text-slate-500 font-mono">
                     Registra más lecturas para ensanchar el radio secundario del mural.
@@ -727,7 +727,7 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
                     <motion.div
                       layoutId={`radial-card-${book.id}`}
                       key={book.id}
-                      className={`rounded-2xl border p-4.5 shadow-md relative transition hover:scale-[1.01] ${getCoverColor(book.coverColor)}`}
+                      className={`rounded-xl border p-3 shadow-sm relative transition hover:scale-[1.01] ${getCoverColor(book.coverColor)}`}
                     >
                       <div className="flex items-center justify-between gap-1 mb-2 pb-2 border-b border-dotted border-slate-250">
                         <span className="text-2xl">{book.emoji}</span>
@@ -736,17 +736,14 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
                         </span>
                       </div>
 
-                      <h4 className="text-base font-bold text-slate-900 tracking-tight line-clamp-1">{book.title}</h4>
+                      <h4 className="text-sm font-bold text-slate-900 tracking-tight line-clamp-1">{book.title}</h4>
                       <p className="text-2xs text-slate-500 font-mono">Por {book.author}</p>
 
                       <p className="text-xs text-slate-700 mt-2 line-clamp-3 italic font-sans">
                         &ldquo;{book.comment}&rdquo;
                       </p>
 
-                      <div className="mt-3.5 bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-white text-2xs">
-                        <span className="font-bold text-amber-400 block border-b border-slate-800 pb-1 mb-1 font-mono uppercase tracking-wide">💡 Aconsejable</span>
-                        <p className="line-clamp-2 text-slate-300 leading-relaxed font-sans">{book.recommendation}</p>
-                      </div>
+                      <p className="mt-2 text-2xs text-slate-500 font-mono line-clamp-1">💡 {book.recommendation}</p>
 
                       <div className="mt-4 flex items-center justify-between gap-2 border-t border-slate-205 pt-3">
                         <div className="flex items-center gap-0.5">
