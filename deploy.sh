@@ -14,6 +14,7 @@ scp .env $SERVER:$APP_DIR/.env
 
 echo ">>> Sincronizar dist al servidor..."
 rsync -av dist/ deploy@178.105.80.193:/home/deploy/apps/ireadit/dist/
+rsync -av public/ deploy@178.105.80.193:/home/deploy/apps/ireadit/public/
 
 echo ">>> Deploy en servidor..."
 ssh $SERVER "
