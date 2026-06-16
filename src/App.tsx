@@ -3,6 +3,7 @@ import Header from './components/Header';
 import BookForm from './components/BookForm';
 import BoardOfFame from './components/BoardOfFame';
 import PrivacyGdprTab from './components/PrivacyGdprTab';
+import TrendingBooks from './components/TrendingBooks';
 import { BookReview } from './types';
 import { BookOpen, AlertCircle, ShieldAlert, CheckCircle, Sparkles } from 'lucide-react';
 
@@ -172,7 +173,9 @@ export default function App() {
           <div className="space-y-6">
             
             {/* Display relevant tab component */}
-            {activeTab === 'gdpr' ? (
+            {activeTab === 'trending' ? (
+              <TrendingBooks />
+            ) : activeTab === 'gdpr' ? (
               <PrivacyGdprTab 
                 userToken={userToken} 
                 onRefresh={fetchBooks}

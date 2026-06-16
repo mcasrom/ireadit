@@ -137,6 +137,16 @@ export default function Header({ books, onRefresh, activeTab, setActiveTab, onOp
             ✈️ Traveller Books / Libros de Viaje
           </button>
           <button
+            onClick={() => setActiveTab('trending')}
+            className={`px-4 py-2 rounded-lg text-xs font-medium font-sans whitespace-nowrap transition duration-150 ${
+              activeTab === 'trending'
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'text-emerald-700 hover:text-emerald-900 hover:bg-emerald-50 border border-emerald-200'
+            }`}
+          >
+            📈 Trending Books
+          </button>
+          <button
             onClick={() => setActiveTab('gdpr')}
             className={`ml-auto px-4 py-2 rounded-lg text-xs font-medium font-sans whitespace-nowrap transition duration-150 flex items-center gap-1.5 ${
               activeTab === 'gdpr'
