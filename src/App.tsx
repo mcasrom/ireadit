@@ -141,6 +141,46 @@ export default function App() {
         onOpenAddModal={() => setIsFormOpen(true)}
       />
 
+
+      {/* Hero Section */}
+      {activeTab === 'mural' && (
+        <div className="relative w-full overflow-hidden" style={{height: '420px'}}>
+          <img
+            src="/hero-bg.jpg"
+            alt="Lee más. Descubre más. Viaja más."
+            className="absolute inset-0 w-full h-full object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-stone-50/95 via-stone-50/70 to-transparent" />
+          <div className="relative h-full max-w-7xl mx-auto px-6 sm:px-10 flex flex-col justify-center gap-5">
+            <div className="max-w-lg">
+              <h1 className="text-4xl sm:text-5xl font-serif font-bold text-stone-800 leading-tight tracking-tight">
+                Lee más.<br />
+                Descubre más.<br />
+                Viaja más.
+              </h1>
+              <p className="mt-4 text-sm text-stone-600 leading-relaxed max-w-sm">
+                oreadit <span className="text-stone-400 font-mono text-xs">(oh read it)</span> es tu espacio
+                para llevar un registro de tus lecturas, compartir reseñas y descubrir nuevos mundos.
+              </p>
+              <div className="mt-6 flex items-center gap-3 flex-wrap">
+                <button
+                  onClick={() => setIsFormOpen(true)}
+                  className="px-5 py-2.5 bg-stone-800 hover:bg-stone-900 text-white text-sm font-semibold rounded-xl transition shadow-sm"
+                >
+                  Añadir lectura
+                </button>
+                <button
+                  onClick={() => setActiveTab('trending')}
+                  className="px-5 py-2.5 border border-stone-300 bg-white/80 hover:bg-white text-stone-700 text-sm font-semibold rounded-xl transition flex items-center gap-2"
+                >
+                  <span>▶</span> Ver tendencias
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Content Pane */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
