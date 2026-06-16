@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CaptchaData } from '../types';
+import { BookCandidate } from './SmartBookSearch';
 import { X, Loader2, Sparkles, ShieldCheck, RefreshCw, Star, Info } from 'lucide-react';
 
 interface BookFormProps {
@@ -7,11 +8,12 @@ interface BookFormProps {
   onClose: () => void;
   onSubmitSuccess: () => void;
   userToken: string;
+  initialBook?: BookCandidate | null;
 }
 
 const EMOJI_OPTIONS = ["📖", "🐧", "🤖", "💡", "💻", "🔥", "🧠", "📈", "🛡️", "🔮", "🍕", "🎭"];
 
-export default function BookForm({ isOpen, onClose, onSubmitSuccess, userToken }: BookFormProps) {
+export default function BookForm({ isOpen, onClose, onSubmitSuccess, userToken, initialBook }: BookFormProps) {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [rating, setRating] = useState(5);
@@ -19,6 +21,16 @@ export default function BookForm({ isOpen, onClose, onSubmitSuccess, userToken }
   const [recommendation, setRecommendation] = useState('');
   const [selectedEmoji, setSelectedEmoji] = useState('📖');
   const [repeat, setRepeat] = useState(true);
+  const [coverUrl, setCoverUrl] = useState('');
+
+  // Pre-fill from SmartBookSearch selection
+  useEffect(() => {
+    if (initialBook) {
+      setTitle(initialBook.title);
+      setAuthor(initialBook.author);
+      setCoverUrl(initialBook.coverUrl || '');
+    }
+  }, [initialBook]);
   const [gdprChecked, setGdprChecked] = useState(false);
 
   // Captcha State
@@ -160,6 +172,16 @@ export default function BookForm({ isOpen, onClose, onSubmitSuccess, userToken }
             
             {/* Input Title */}
             <div>
+              {coverUrl && (
+                <div className="flex items-center gap-3 p-2.5 bg-slate-50 border border-slate-200 rounded-xl mb-3">
+                  <img src={coverUrl} alt={title} className="w-10 h-14 object-cover rounded-md shadow-sm shrink-0" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-slate-800 truncate">{title}</p>
+                    <p className="text-xs text-slate-500 truncate">{author}</p>
+                    <button type="button" onClick={() => { setTitle(''); setAuthor(''); setCoverUrl(''); }} className="text-xs text-red-400 hover:text-red-600 mt-0.5">Cambiar libro</button>
+                  </div>
+                </div>
+              )}
               <label className="block text-xs font-semibold text-slate-700 font-sans uppercase mb-1">
                 Título del Libro <span className="text-red-500">*</span>
               </label>

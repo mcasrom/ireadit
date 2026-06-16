@@ -6,6 +6,7 @@ import PrivacyGdprTab from './components/PrivacyGdprTab';
 import TrendingBooks from './components/TrendingBooks';
 import { BookReview } from './types';
 import { BookOpen, AlertCircle, ShieldAlert, CheckCircle, Sparkles } from 'lucide-react';
+import SmartBookSearch, { BookCandidate } from './components/SmartBookSearch';
 
 export default function App() {
   const [books, setBooks] = useState<BookReview[]>([]);
@@ -15,6 +16,8 @@ export default function App() {
   // Tab Routing
   const [activeTab, setActiveTab] = useState<string>('mural');
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [selectedBook, setSelectedBook] = useState<BookCandidate | null>(null);
 
   // Author Token (Stored locally to support instant self-service GDPR purges)
   const [userToken, setUserToken] = useState<string>('');
@@ -138,7 +141,7 @@ export default function App() {
         onRefresh={fetchBooks}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        onOpenAddModal={() => setIsFormOpen(true)}
+        onOpenAddModal={() => setShowSearch(true)}
       />
 
 
@@ -163,7 +166,7 @@ export default function App() {
               </p>
               <div className="mt-6 flex items-center gap-3 flex-wrap">
                 <button
-                  onClick={() => setIsFormOpen(true)}
+                  onClick={() => setShowSearch(true)}
                   className="px-5 py-2.5 bg-stone-800 hover:bg-stone-900 text-white text-sm font-semibold rounded-xl transition shadow-sm"
                 >
                   Añadir lectura
@@ -238,24 +241,44 @@ export default function App() {
       {/* Slide-over Form model */}
       <BookForm 
         isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
+        onClose={() => { setIsFormOpen(false); setSelectedBook(null); }}
         onSubmitSuccess={() => {
           showNotification('success', "Lectura procesada, clasificada y publicada en el núcleo de la fama.");
           fetchBooks();
+          setSelectedBook(null);
         }}
         userToken={userToken}
+        initialBook={selectedBook}
       />
 
       {/* Footer copyright */}
-      <footer className="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-400 font-mono">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <p>© {new Date().getFullYear()} Ireadit. Todos los derechos reservados. No tracking, 100% portable.</p>
-          <p className="flex items-center justify-center gap-1">
-            <span>Powered by</span>
-            <span className="font-semibold text-slate-700 flex items-center gap-0.5">
-              <Sparkles className="w-3 h-3 text-indigo-500" /> Express + Vite + Gemini
-            </span>
-          </p>
+      <footer className="bg-white border-t border-slate-200 py-8 text-xs text-slate-400 font-mono">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col gap-4">
+          {/* Ecosistema */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p>© {new Date().getFullYear()} Ireadit. No tracking, 100% portable.</p>
+            <p className="flex items-center gap-1">
+              <span>Powered by</span>
+              <span className="font-semibold text-slate-700 flex items-center gap-0.5">
+                <Sparkles className="w-3 h-3 text-indigo-500" /> Express + Vite + Gemini
+              </span>
+            </p>
+          </div>
+          {/* Enlace ecosistema madre */}
+          <div className="border-t border-slate-100 pt-4 flex flex-col sm:flex-row items-center justify-center gap-4 text-slate-400">
+            <span>Parte del ecosistema</span>
+            <a href="https://www.viajeinteligencia.com" target="_blank" rel="noopener noreferrer"
+              className="font-semibold text-slate-600 hover:text-slate-900 transition underline underline-offset-2">
+              viajeinteligencia.com
+            </a>
+            <span className="hidden sm:block">·</span>
+            <a href="https://georisk.viajeinteligencia.com" target="_blank" rel="noopener noreferrer"
+              className="hover:text-slate-600 transition">GeoRisk</a>
+            <a href="https://tools.viajeinteligencia.com" target="_blank" rel="noopener noreferrer"
+              className="hover:text-slate-600 transition">Tools</a>
+            <a href="https://gc.motors.viajeinteligencia.com" target="_blank" rel="noopener noreferrer"
+              className="hover:text-slate-600 transition">GC Motors</a>
+          </div>
         </div>
       </footer>
 

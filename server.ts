@@ -828,6 +828,68 @@ app.post("/api/admin/books/:id/delete", (req, res) => {
 });
 
 // Serve frontend assets via Vite in dev or static files in production
+// TRENDING BOOKS - Open Library API
+app.get("/api/trending/:period", async (req, res) => {
+  const period = ['daily','weekly','monthly'].includes(req.params.period) ? req.params.period : 'weekly';
+  try {
+    const response = await fetch(`https://openlibrary.org/trending/${period}.json`);
+    const data = await response.json();
+    const works = (data.works || []).slice(0, 20).map((w: any) => ({
+      title: w.title || 'Unknown',
+      author: w.author_name?.[0] || 'Unknown',
+      coverId: w.cover_id || w.cover_edition_key || null,
+      coverUrl: w.cover_id ? `https://covers.openlibrary.org/b/id/${w.cover_id}-M.jpg` : null,
+      openLibraryKey: w.key || null,
+      readCount: w.readinglog_count || 0,
+      firstPublished: w.first_publish_year || null,
+    }));
+    res.json({ period, works, updatedAt: new Date().toISOString() });
+  } catch (e) {
+    res.status(500).json({ error: 'Error fetching trending books' });
+  }
+});
+
+
+// SMART BOOK SEARCH - Open Library + Gemini fallback
+app.get("/api/search", async (req, res) => {
+  const q = (req.query.q as string || '').trim();
+  if (!q || q.length < 3) return res.json({ results: [] });
+
+  try {
+    // Open Library search
+    const olRes = await fetch(
+      "https://openlibrary.org/search.json?q=" + encodeURIComponent(q) + "&limit=6&fields=title,author_name,first_publish_year,cover_i,key"
+    );
+    const olData = await olRes.json();
+    const results = (olData.docs || []).slice(0, 6).map((d: any) => ({
+      title: d.title || "Desconocido",
+      author: d.author_name?.[0] || "Autor desconocido",
+      year: d.first_publish_year || null,
+      coverUrl: d.cover_i ? "https://covers.openlibrary.org/b/id/" + d.cover_i + "-M.jpg" : null,
+      openLibraryKey: d.key || null,
+    }));
+
+    // If no results, try Gemini as fallback
+    if (results.length === 0 && process.env.GEMINI_API_KEY) {
+      try {
+        const geminiRes = await ai.models.generateContent({
+          model: "gemini-2.0-flash",
+          contents: "Identifica el libro mas probable para esta busqueda: \"" + q + "\". Responde SOLO con JSON: {title, author, year}. Sin explicaciones.",
+        });
+        const text = geminiRes.text?.replace(/```json|```/g, "").trim() || "";
+        const parsed = JSON.parse(text);
+        return res.json({ results: [], aiSuggestion: { title: parsed.title, author: parsed.author, year: parsed.year } });
+      } catch {
+        return res.json({ results: [] });
+      }
+    }
+
+    res.json({ results });
+  } catch (e) {
+    res.status(500).json({ error: "Error en busqueda", results: [] });
+  }
+});
+
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
