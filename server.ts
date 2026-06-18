@@ -431,6 +431,82 @@ const GUTENBERG_TRAVEL_CLASSICS = [
     gutenbergLink: "https://www.gutenberg.org/ebooks/35",
     gutenbergTextLink: "https://www.gutenberg.org/cache/epub/35/pg35-images.html"
   }
+,
+  {
+    gutenbergId: 2184,
+    title: "Unbeaten Tracks in Japan",
+    author: "Isabella L. Bird",
+    rating: 5,
+    comment: "Crónica extraordinaria de Isabella Bird, viajera victoriana que recorrió en 1878 el interior rural de Japón —entonces casi desconocido para occidentales— a caballo y en rickshaw. Retratos vívidos de aldeas remotas, templos shinto, costumbres ainu y la vida cotidiana japonesa antes de la modernización Meiji.",
+    recommendation: "Viajeros apasionados por Japón, historiadores del siglo XIX, amantes de la literatura de exploración femenina.",
+    emoji: "🗾",
+    coverColor: "rose",
+    aiSummary: "Una mujer sola en el Japón prohibido de 1878 — el diario de viaje más audaz de la era victoriana.",
+    language: "en",
+    country: "Japón",
+    gutenbergLink: "https://www.gutenberg.org/ebooks/2184",
+    gutenbergTextLink: "https://www.gutenberg.org/cache/epub/2184/pg2184-images.html"
+  },
+  {
+    gutenbergId: 5857,
+    title: "Travels in the Interior Districts of Africa",
+    author: "Mungo Park",
+    rating: 5,
+    comment: "El relato épico de Mungo Park explorando el río Níger en 1795, adentrándose solo en el África subsahariana cuando ningún europeo había llegado tan lejos. Capturado, esclavizado y liberado, Park documenta imperios, culturas y geografías con una honestidad brutal y una valentía extraordinaria.",
+    recommendation: "Exploradores, geógrafos, historiadores de África y lectores de aventuras de exploración extrema.",
+    emoji: "🌍",
+    coverColor: "amber",
+    aiSummary: "El primer europeo en ver el Níger — un viaje al corazón desconocido del continente africano.",
+    language: "en",
+    country: "África",
+    gutenbergLink: "https://www.gutenberg.org/ebooks/5857",
+    gutenbergTextLink: "https://www.gutenberg.org/cache/epub/5857/pg5857-images.html"
+  },
+  {
+    gutenbergId: 2226,
+    title: "Kim",
+    author: "Rudyard Kipling",
+    rating: 5,
+    comment: "La gran novela de carretera de la India colonial. Kim, huérfano irlandés criado en Lahore, recorre el Gran Camino Troncal de la India entre espías, lamas budistas, mercaderes y soldados. La descripción más rica jamás escrita de la India mogol y británica: bazares, montañas del Punjab, los Himalayas y el Gran Juego.",
+    recommendation: "Viajeros por India y Pakistan, lectores de espionaje clásico, amantes de la literatura colonial crítica.",
+    emoji: "🐘",
+    coverColor: "emerald",
+    aiSummary: "El Gran Camino Troncal de la India — una novela de iniciación que es también el mejor mapa literario del subcontinente.",
+    language: "en",
+    country: "India",
+    gutenbergLink: "https://www.gutenberg.org/ebooks/2226",
+    gutenbergTextLink: "https://www.gutenberg.org/cache/epub/2226/pg2226-images.html"
+  },
+  {
+    gutenbergId: 17489,
+    title: "Viaje por España",
+    author: "Théophile Gautier",
+    rating: 4,
+    comment: "El poeta francés Théophile Gautier recorre España en 1840 con ojos de romántico absoluto: Granada, Sevilla, Madrid, los toros, las ventas de camino, los gitanos del Sacromonte y la arquitectura árabe de la Alhambra. Una de las mejores crónicas de viaje escritas sobre España por un extranjero, en español fluido y elegante.",
+    recommendation: "Hispanistas, viajeros por Andalucía, amantes del romanticismo europeo y la España del siglo XIX.",
+    emoji: "🌹",
+    coverColor: "red",
+    aiSummary: "España vista por el romanticismo francés — bandoleros, flamenco y la Alhambra bajo la luna.",
+    language: "es",
+    country: "España",
+    gutenbergLink: "https://www.gutenberg.org/ebooks/17489",
+    gutenbergTextLink: "https://www.gutenberg.org/cache/epub/17489/pg17489-images.html"
+  },
+  {
+    gutenbergId: 15623,
+    title: "In the Amazon Jungle",
+    author: "Algot Lange",
+    rating: 4,
+    comment: "Expedición científica y de aventura al corazón de la selva amazónica brasileña en 1912. Lange documenta tribus indígenas no contactadas, fauna extrema, enfermedades tropicales y la vida en los afluentes del Amazonas con fotografías y mapas de primera mano. Un testimonio único de la Amazonia antes de la deforestación.",
+    recommendation: "Naturalistas, exploradores, amantes de la Amazonia y lectores de literatura de expedición científica.",
+    emoji: "🌿",
+    coverColor: "emerald",
+    aiSummary: "La Amazonia virgen de 1912 — tribus, anacondas y el río más grande del mundo sin mapas.",
+    language: "en",
+    country: "Brasil",
+    gutenbergLink: "https://www.gutenberg.org/ebooks/15623",
+    gutenbergTextLink: "https://www.gutenberg.org/cache/epub/15623/pg15623-images.html"
+  }
 ];
 
 app.get("/api/gutenberg/classics", (req, res) => {
@@ -473,7 +549,8 @@ app.post("/api/gutenberg/import", (req, res) => {
     gutenbergId: classic.gutenbergId,
     gutenbergLink: classic.gutenbergLink,
     gutenbergTextLink: classic.gutenbergTextLink,
-    language: classic.language
+    language: classic.language,
+    country: classic.country || undefined
   };
 
   booksMemory.unshift(newBook);
@@ -484,7 +561,7 @@ app.post("/api/gutenberg/import", (req, res) => {
 
 // 3. Post a new book with captcha validation & AI-powered anti-fraud moderation
 app.post("/api/books", async (req, res) => {
-  const { title, author, rating, comment, recommendation, emoji, repeat, captchaId, captchaAnswer, userToken } = req.body;
+  const { title, author, rating, comment, recommendation, emoji, repeat, captchaId, captchaAnswer, userToken, country } = req.body;
   
   // Basic validation
   if (!title || !author || !comment || !recommendation || !captchaId || !captchaAnswer || !userToken) {
@@ -635,7 +712,8 @@ app.post("/api/books", async (req, res) => {
     coverColor: selectedColor,
     aiSummary: aiLabel.aiSummary,
     timestamp: new Date().toISOString(),
-    editToken: userToken
+    editToken: userToken,
+    country: country ? country.trim() : undefined
   };
 
   booksMemory.unshift(newBook);
@@ -849,46 +927,161 @@ app.get("/api/trending/:period", async (req, res) => {
   }
 });
 
+// TRENDING CASTELLANO — Open Library queries en español (sin hardcodear)
+app.get("/api/trending-es", async (req, res) => {
+  const source = (req.query.source as string) || 'all';
 
-// SMART BOOK SEARCH - Open Library + Gemini fallback
-app.get("/api/search", async (req, res) => {
-  const q = (req.query.q as string || '').trim();
-  if (!q || q.length < 3) return res.json({ results: [] });
+  const QUERIES: Record<string, string[]> = {
+    spain: [
+      'premio planeta novela',
+      'premio cervantes literatura',
+      'premio nadal novela española',
+      'literatura española contemporanea',
+    ],
+    latam: [
+      'premio romulo gallegos novela',
+      'novela latinoamericana contemporanea',
+      'literatura hispanoamericana novela',
+      'premio casa de las americas',
+    ],
+  };
+
+  const pickQueries = (src: string) => {
+    if (src === 'spain') return QUERIES.spain;
+    if (src === 'latam') return QUERIES.latam;
+    return [...QUERIES.spain, ...QUERIES.latam];
+  };
 
   try {
-    // Open Library search
+    const queries = pickQueries(source);
+    const q = queries[Math.floor(Math.random() * queries.length)];
+    const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(q)}&limit=20&fields=title,author_name,cover_i,key,first_publish_year&sort=rating`;
+
+    const r = await fetch(url);
+    const data = await r.json();
+
+    const works = (data.docs || [])
+      .filter((b: any) => b.cover_i && b.title && b.author_name)
+      .slice(0, 16)
+      .map((b: any) => ({
+        title: b.title,
+        author: b.author_name?.[0] || 'Desconocido',
+        coverUrl: `https://covers.openlibrary.org/b/id/${b.cover_i}-M.jpg`,
+        openLibraryKey: b.key || null,
+        year: b.first_publish_year || null,
+        region: source === 'latam' ? 'latam' : source === 'spain' ? 'spain' : (q.includes('latino') || q.includes('latinoamericana') || q.includes('gallegos') || q.includes('americas') ? 'latam' : 'spain'),
+      }));
+
+    res.json({ source, query: q, works, updatedAt: new Date().toISOString(), total: works.length });
+  } catch (e) {
+    res.status(500).json({ error: 'Error fetching Spanish books', works: [] });
+  }
+});
+
+// SMART BOOK SEARCH - Motor de búsqueda híbrido real (Open Library + Google Books + Gemini fallback)
+app.get("/api/search", async (req, res) => {
+  const q = (req.query.q as string || "").trim();
+  console.log("\n[SEARCH] Buscando de forma hibrida: \"" + q + "\"");
+
+  if (!q || q.length < 3) return res.json({ results: [] });
+
+  let results: any[] = [];
+
+  // 1. Open Library
+  try {
     const olRes = await fetch(
       "https://openlibrary.org/search.json?q=" + encodeURIComponent(q) + "&limit=6&fields=title,author_name,first_publish_year,cover_i,key"
     );
     const olData = await olRes.json();
-    const results = (olData.docs || []).slice(0, 6).map((d: any) => ({
-      title: d.title || "Desconocido",
-      author: d.author_name?.[0] || "Autor desconocido",
-      year: d.first_publish_year || null,
-      coverUrl: d.cover_i ? "https://covers.openlibrary.org/b/id/" + d.cover_i + "-M.jpg" : null,
-      openLibraryKey: d.key || null,
-    }));
+    if (olData.docs) {
+      results = olData.docs.map((d: any) => ({
+        title: d.title || "Desconocido",
+        author: d.author_name?.[0] || "Autor desconocido",
+        year: d.first_publish_year || null,
+        coverUrl: d.cover_i ? "https://covers.openlibrary.org/b/id/" + d.cover_i + "-M.jpg" : null,
+        openLibraryKey: d.key || null,
+        source: "openlibrary"
+      }));
+    }
+    console.log("[SEARCH] Open Library: " + results.length + " resultados");
+  } catch (olErr) {
+    console.error("[SEARCH ERROR] Fallo en Open Library:", olErr);
+  }
 
-    // If no results, try Gemini as fallback
-    if (results.length === 0 && process.env.GEMINI_API_KEY) {
+  // 2. Google Books (mejor cobertura de editoriales españolas de nicho)
+  try {
+    const gbUrl = "https://www.googleapis.com/books/v1/volumes?q=" + encodeURIComponent(q) + "&maxResults=8&langRestrict=es";
+    const gbRes = await fetch(gbUrl);
+    const gbData = await gbRes.json();
+
+    if (gbData.error) {
+      console.warn("[SEARCH WARNING] Google Books API error:", gbData.error.message);
+    } else if (gbData.items) {
+      const normalize = (s: string) => s.toLowerCase().replace(/\s+/g, " ").trim();
+      const existing = new Set(results.map(r => normalize(r.title + "|" + r.author)));
+
+      const gbResults = gbData.items.map((item: any) => {
+        const v = item.volumeInfo || {};
+        return {
+          title: v.title || "Desconocido",
+          author: v.authors?.[0] || "Autor desconocido",
+          year: v.publishedDate ? parseInt(v.publishedDate) : null,
+          coverUrl: v.imageLinks?.thumbnail
+            ? v.imageLinks.thumbnail.replace("http://", "https://")
+            : null,
+          source: "googlebooks",
+        };
+      });
+
+      let gbAdded = 0;
+      for (const g of gbResults) {
+        const key = normalize(g.title + "|" + g.author);
+        if (!existing.has(key)) {
+          results.push(g);
+          existing.add(key);
+          gbAdded++;
+        }
+      }
+      console.log("[SEARCH] Google Books: " + gbAdded + " nuevos (total: " + results.length + ")");
+    }
+  } catch (gbErr) {
+    console.error("[SEARCH ERROR] Fallo critico en Google Books:", gbErr);
+  }
+
+  // 3. Fallback Gemini solo si ambas APIs devuelven vacío
+  if (results.length === 0) {
+    if (process.env.GEMINI_API_KEY) {
+      console.log("[SEARCH] APIs vacias. Activando salvavidas de Gemini...");
       try {
         const geminiRes = await ai.models.generateContent({
           model: "gemini-2.0-flash",
-          contents: "Identifica el libro mas probable para esta busqueda: \"" + q + "\". Responde SOLO con JSON: {title, author, year}. Sin explicaciones.",
+          contents: "Identifica el libro mas probable para esta busqueda: \"" + q + "\". Responde SOLO con un objeto JSON plano, sin formato markdown, sin usar bloques de codigo, con tres campos exactos: {\"title\": \"\", \"author\": \"\", \"year\": null}. Si no sabes que poner inventa el mas logico para la busqueda.",
         });
-        const text = geminiRes.text?.replace(/```json|```/g, "").trim() || "";
-        const parsed = JSON.parse(text);
-        return res.json({ results: [], aiSuggestion: { title: parsed.title, author: parsed.author, year: parsed.year } });
-      } catch {
-        return res.json({ results: [] });
-      }
-    }
 
-    res.json({ results });
-  } catch (e) {
-    res.status(500).json({ error: "Error en busqueda", results: [] });
+        let text = geminiRes.text || "";
+        text = text.replace(/```json|```/g, "").trim();
+        const parsed = JSON.parse(text);
+
+        return res.json({
+          results: [],
+          aiSuggestion: {
+            title: parsed.title || "Sugerencia de IA",
+            author: parsed.author || "Autor Desconocido",
+            year: parsed.year || null
+          }
+        });
+      } catch (geminiErr: any) {
+        console.error("[SEARCH ERROR] Fallo el fallback de Gemini:", geminiErr.message);
+        return res.json({ results: [], error: "Fallback fallido", debug: geminiErr.message });
+      }
+    } else {
+      console.log("[SEARCH WARNING] Busqueda vacia pero GEMINI_API_KEY no esta configurada.");
+    }
   }
+
+  res.json({ results });
 });
+
 
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
