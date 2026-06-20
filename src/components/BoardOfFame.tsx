@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { BookReview } from '../types';
-import { Heart, ThumbsDown, Recycle, Star, Trash2, Shield, Search, Award, Compass, HelpCircle, BookOpen, Download, ExternalLink, Globe, Plus } from 'lucide-react';
+import { Heart, ThumbsDown, Recycle, Star, Trash2, Shield, Search, Award, Compass, HelpCircle, BookOpen, Download, ExternalLink, Globe, Plus, Gift } from 'lucide-react';
 import { motion } from 'motion/react';
+import BookReviews from './BookReviews';
 
 interface BoardOfFameProps {
   books: BookReview[];
@@ -10,13 +11,21 @@ interface BoardOfFameProps {
   userToken: string;
   activeTab: string;
   onRefresh?: () => void;
+  onGift: (book: BookReview) => void;
 }
 
-export default function BoardOfFame({ books, onReact, onDelete, userToken, activeTab, onRefresh }: BoardOfFameProps) {
+export default function BoardOfFame({ books, onReact, onDelete, userToken, activeTab, onRefresh, onGift }: BoardOfFameProps) {
   const [filterCategory, setFilterCategory] = useState('All');
+  const [filterCountry, setFilterCountry] = useState('Todos');
   const [searchQuery, setSearchQuery] = useState('');
   const [gutenbergLang, setGutenbergLang] = useState<'all' | 'es' | 'en'>('all');
   const [importingId, setImportingId] = useState<number | null>(null);
+  const [expandedReviews, setExpandedReviews] = useState<Set<string>>(new Set());
+  const toggleReviews = (id: string) => setExpandedReviews(prev => {
+    const next = new Set(prev);
+    next.has(id) ? next.delete(id) : next.add(id);
+    return next;
+  });
   const [gutenbergClassicsList, setGutenbergClassicsList] = useState<any[]>([]);
 
   useEffect(() => {
@@ -44,7 +53,7 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
         alert(data.message || "¡Importado correctamente!");
         if (onRefresh) onRefresh();
       } else {
-        alert(data.error || "Fallo en la importación de Project Gutenberg.");
+        alert(data.error || "Fallo en la importación.");
       }
     } catch (err) {
       alert("Error al contactar con el servidor.");
@@ -54,6 +63,10 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
   };
 
   const allCategories = ['All', ...Array.from(new Set(books.map(b => b.category)))];
+  const travelBooks = books.filter(b => b.category === 'Viaje');
+  const allCountries = ['Todos', ...Array.from(new Set(
+    travelBooks.map(b => b.country).filter(Boolean) as string[]
+  )).sort()];
 
   const categoryThemeMap: Record<string, string> = {
     Linux: "bg-amber-100 border-amber-200 text-amber-800",
@@ -119,7 +132,7 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
               return (
                 <div key={book.id} className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 bg-slate-50 hover:bg-slate-100/60 border border-slate-200 rounded-2xl transition duration-150">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center font-bold text-sm tracking-tight font-mono shrink-0">
+                    <div className="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center font-bold text-sm font-mono shrink-0">
                       #{index + 1}
                     </div>
                     <div>
@@ -136,15 +149,18 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
                   </div>
                   <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 border-t sm:border-t-0 border-slate-200 pt-2.5 sm:pt-0 shrink-0">
                     <div className="text-right">
-                      <span className="block text-[9px] text-slate-400 font-mono uppercase tracking-wider">Puntuación Global</span>
+                      <span className="block text-[9px] text-slate-400 font-mono uppercase tracking-wider">Puntuación</span>
                       <span className="text-sm font-bold font-mono text-indigo-700">{score} pts</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <button onClick={() => onReact(book.id, 'like')} className="bg-white hover:bg-slate-150 text-slate-700 px-2.5 py-1.5 rounded-lg text-2xs font-mono font-bold flex items-center gap-1 border border-slate-200 transition">
                         <Heart className="w-3" /><span>{book.likes || 0}</span>
                       </button>
+                      <button onClick={() => onGift(book)} className="bg-amber-50 hover:bg-amber-100 text-amber-700 px-2.5 py-1.5 rounded-lg text-2xs border border-amber-200 transition" title="Recomendar lectura">
+                        <Gift className="w-3" />
+                      </button>
                       {book.editToken === userToken && (
-                        <button onClick={() => onDelete(book.id)} className="bg-red-50 hover:bg-red-100 text-red-650 px-2.5 py-1.5 rounded-lg text-2xs transition border border-red-200 font-semibold" title="Purga inmediata (RGPD)">
+                        <button onClick={() => onDelete(book.id)} className="bg-red-50 hover:bg-red-100 text-red-650 px-2.5 py-1.5 rounded-lg text-2xs transition border border-red-200 font-semibold" title="Purga RGPD">
                           <Trash2 className="w-3" />
                         </button>
                       )}
@@ -161,7 +177,10 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
 
   // ── TAB: VIAJEROS ───────────────────────────────────────────────────────────
   if (activeTab === 'viajeros') {
-    const travelBooks = books.filter(b => b.category === 'Viaje');
+    const travelBooksAll = books.filter(b => b.category === 'Viaje');
+    const travelBooks = filterCountry === 'Todos'
+      ? travelBooksAll
+      : travelBooksAll.filter(b => b.country === filterCountry);
     return (
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-205 shadow-sm space-y-8 animate-fade-in" id="traveller-books-panel">
         <div className="border-b border-slate-100 pb-5">
@@ -184,8 +203,23 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-4">
+            {/* Filtro por país */}
+            {allCountries.length > 1 && (
+              <div className="flex items-center gap-2 flex-wrap mb-2">
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider shrink-0">🌍 País:</span>
+                {allCountries.map(c => (
+                  <button key={c} onClick={() => setFilterCountry(c)}
+                    className={"px-2.5 py-1 rounded-lg text-[10px] font-semibold whitespace-nowrap transition border " +
+                      (filterCountry === c
+                        ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
+                        : "text-slate-600 border-slate-200 hover:bg-slate-50")}>
+                    {c}
+                  </button>
+                ))}
+              </div>
+            )}
             <h3 className="text-xs font-bold font-mono uppercase tracking-wider text-slate-400">
-              📖 Catálogo Activo ({travelBooks.length} libros)
+              📖 Catálogo Activo ({travelBooks.length} libros{filterCountry !== 'Todos' ? ' · ' + filterCountry : ''})
             </h3>
             {travelBooks.length === 0 ? (
               <div className="p-8 text-center bg-slate-50 border border-slate-150 rounded-2xl">
@@ -198,7 +232,12 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
                     <div>
                       <div className="flex items-center justify-between mb-3 pb-2 border-b border-indigo-100/40">
                         <span className="text-2xl">{book.emoji || "✈"}</span>
+                        <div className="flex items-center gap-1">
+                        {book.country && (
+                          <span className="px-2 py-0.5 text-[9px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 rounded">{book.country}</span>
+                        )}
                         <span className="px-2 py-0.5 text-[9px] font-bold bg-indigo-600 text-white rounded">Traveller Book</span>
+                      </div>
                       </div>
                       <h4 className="text-sm font-bold text-slate-900 leading-tight font-sans">{book.title}</h4>
                       <p className="text-[10px] text-slate-400 font-mono">Por {book.author}</p>
@@ -212,9 +251,14 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
                           <Star key={s} className={`w-3 h-3 ${s <= book.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-205'}`} />
                         ))}
                       </div>
-                      <button onClick={() => onReact(book.id, 'like')} className="bg-white hover:bg-slate-50 text-indigo-600 px-2 py-1 rounded border border-indigo-100 font-bold transition flex items-center gap-1 text-[10px]">
-                        <Heart className="w-2.5 h-2.5 text-rose-500 fill-rose-500/10" /><span>{book.likes || 0}</span>
-                      </button>
+                      <div className="flex items-center gap-1.5">
+                        <button onClick={() => onReact(book.id, 'like')} className="bg-white hover:bg-slate-50 text-indigo-600 px-2 py-1 rounded border border-indigo-100 font-bold transition flex items-center gap-1 text-[10px]">
+                          <Heart className="w-2.5 h-2.5 text-rose-500 fill-rose-500/10" /><span>{book.likes || 0}</span>
+                        </button>
+                        <button onClick={() => onGift(book)} className="bg-amber-50 hover:bg-amber-100 text-amber-600 px-2 py-1 rounded border border-amber-100 transition text-[10px]" title="Recomendar">
+                          <Gift className="w-2.5 h-2.5" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -364,9 +408,15 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
                       <Star key={s} className={`w-3.5 h-3.5 ${s <= book.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
                     ))}
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
                     <button onClick={() => onReact(book.id, 'like')} className="bg-white/80 hover:bg-white text-slate-700 px-3 py-1.5 rounded-lg text-xs font-mono font-bold flex items-center gap-1 border border-slate-200 shadow-3xs">
                       <Heart className="w-3 h-3 fill-rose-500/10" /><span>{book.likes || 0}</span>
+                    </button>
+                    <button onClick={() => onGift(book)} className="bg-amber-50 hover:bg-amber-100 text-amber-600 px-3 py-1.5 rounded-lg text-xs border border-amber-200 transition" title="Recomendar">
+                      <Gift className="w-3 h-3" />
+                    </button>
+                    <button onClick={() => toggleReviews(book.id)} className="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-3 py-1.5 rounded-lg text-xs border border-indigo-200 transition font-semibold" title="Valoraciones de la comunidad">
+                      ★
                     </button>
                     {book.editToken === userToken && (
                       <button onClick={() => onDelete(book.id)} className="bg-red-50 hover:bg-red-100 text-red-650 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center transition border border-red-200">
@@ -375,6 +425,11 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
                     )}
                   </div>
                 </div>
+                {expandedReviews.has(book.id) && (
+                  <div className="mt-3 pt-3 border-t border-slate-200">
+                    <BookReviews bookId={book.id} bookTitle={book.title} />
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>
@@ -414,7 +469,7 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
         ) : (
           <div className="relative z-10 flex flex-col gap-8">
 
-            {/* ── LEVEL 1: Núcleo — último libro, tarjeta grande ── */}
+            {/* LEVEL 1: Núcleo */}
             <div className="flex flex-col items-center">
               <div className="text-center mb-3">
                 <span className="px-2 py-0.5 bg-amber-500/20 text-amber-300 text-[10px] uppercase font-mono tracking-widest rounded-full border border-amber-500/40 font-bold">
@@ -460,6 +515,9 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
                         <button onClick={() => onReact(book.id, 'dislike')} className="bg-white/80 hover:bg-white text-slate-700 px-3 py-1.5 rounded-lg text-xs font-mono font-medium flex items-center gap-1 border border-slate-200 shadow-xs transition">
                           <ThumbsDown className="w-3.5 h-3.5" /><span>{book.dislikes || 0}</span>
                         </button>
+                        <button onClick={() => onGift(book)} className="bg-amber-50 hover:bg-amber-100 text-amber-700 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 border border-amber-200 transition" title="Recomendar lectura">
+                          <Gift className="w-3.5 h-3.5" /><span className="hidden sm:inline">Regalo</span>
+                        </button>
                         {book.editToken === userToken && (
                           <button onClick={() => onDelete(book.id)} className="bg-red-50 hover:bg-red-100 text-red-650 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 border border-red-200 transition">
                             <Trash2 className="w-3.5 h-3.5" /><span className="hidden sm:inline">Purga RGPD</span>
@@ -480,13 +538,12 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
               </span>
             </div>
 
-            {/* ── LEVEL 2: Órbita media — tarjeta compacta (emoji + título + autor + estrellas + like) ── */}
+            {/* LEVEL 2: Órbita media */}
             {books.slice(1, 4).length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {books.slice(1, 4).map((book) => (
                   <motion.div layoutId={`radial-card-${book.id}`} key={book.id}
                     className={`rounded-xl border p-3 shadow-sm flex flex-col gap-2 transition hover:scale-[1.01] ${getCoverColor(book.coverColor)}`}>
-                    {/* Header row */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 min-w-0">
                         <span className="text-xl shrink-0">{book.emoji}</span>
@@ -499,7 +556,6 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
                         {book.category}
                       </span>
                     </div>
-                    {/* Footer row: stars + like + delete */}
                     <div className="flex items-center justify-between pt-2 border-t border-slate-200/60">
                       <div className="flex items-center gap-0.5">
                         {[1,2,3,4,5].map((s) => (
@@ -509,6 +565,9 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
                       <div className="flex items-center gap-1.5">
                         <button onClick={() => onReact(book.id, 'like')} className="bg-white/80 hover:bg-white text-slate-700 hover:text-rose-600 px-2 py-1 rounded text-[10px] font-mono font-medium flex items-center gap-0.5 border border-slate-200">
                           <Heart className="w-2.5 h-2.5 text-rose-500 fill-rose-500/15" /><span>{book.likes || 0}</span>
+                        </button>
+                        <button onClick={() => onGift(book)} className="bg-amber-50 hover:bg-amber-100 text-amber-600 px-2 py-1 rounded text-[10px] border border-amber-200 transition" title="Recomendar">
+                          <Gift className="w-2.5 h-2.5" />
                         </button>
                         {book.editToken === userToken && (
                           <button onClick={() => onDelete(book.id)} className="bg-red-50 hover:bg-red-100 text-red-650 px-2 py-1 rounded text-[10px] border border-red-200">
@@ -532,7 +591,7 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
                   </span>
                 </div>
 
-                {/* ── LEVEL 3: Chips horizontales ── */}
+                {/* LEVEL 3: Chips */}
                 <div className="flex flex-col gap-2">
                   {books.slice(4).map((book) => (
                     <motion.div layoutId={`radial-card-${book.id}`} key={book.id}
@@ -540,10 +599,13 @@ export default function BoardOfFame({ books, onReact, onDelete, userToken, activ
                       <span className="text-lg shrink-0">{book.emoji}</span>
                       <span className="text-xs font-bold text-white truncate flex-1" title={book.title}>{book.title}</span>
                       <span className="text-[9px] text-slate-400 font-mono shrink-0 hidden sm:block">Por {book.author}</span>
-                      <span className={`px-1.5 py-0.5 text-[8px] font-mono rounded shrink-0 bg-slate-800 text-slate-300`}>{book.category}</span>
+                      <span className="px-1.5 py-0.5 text-[8px] font-mono rounded shrink-0 bg-slate-800 text-slate-300">{book.category}</span>
                       <span className="text-amber-400 font-bold font-mono text-[10px] shrink-0">{book.rating}★</span>
                       <button onClick={() => onReact(book.id, 'like')} className="text-slate-400 hover:text-rose-500 flex items-center gap-0.5 text-[10px] font-mono shrink-0">
                         <Heart className="w-2.5 h-2.5" /><span>{book.likes || 0}</span>
+                      </button>
+                      <button onClick={() => onGift(book)} className="text-slate-500 hover:text-amber-400 shrink-0 transition" title="Recomendar">
+                        <Gift className="w-3 h-3" />
                       </button>
                       {book.editToken === userToken && (
                         <button onClick={() => onDelete(book.id)} className="text-slate-600 hover:text-red-500 shrink-0">
